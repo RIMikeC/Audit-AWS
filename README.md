@@ -13,20 +13,28 @@ There are a few ways of gathering the data and a few ways of mining it. For exam
 - Use the existing state file
 
 ...This is neat, because the data is already there and always available
+
 ...but holy crap its hard slog to parse it, every env for every product team will have thousands of lines of JSON to wade through
 
 - Whip up some bash scripts to use the CLI
 
 ...Quick and painless to develop
+
 ...but it forces us to use JSON and is impractical unless run locally, which implies lots of role-switching, which seems a bit dumb
+
 ...it will also inevitably lead to IAM problems and life is too short for this type of pain
 
 - Write the data-gathering as a shared lambda, then teams can run it themselves
+
 ...hmmm seems to be a decent option. We'd be able to choose what we looked at and choose an appropriate output format and location
+
 ...we'd also need to write custom code to mine the data, either that or drag it into Excel as a CSV
 
-##Criteria
+## Criteria
 
+Here are some possible criteria. I suggest we pick the ones that will be simplest to code. Any others that look interesting
+can go onto a backlog.
+ 
 - Security
 - Scalability
 - Reliability
@@ -40,8 +48,9 @@ There are a few ways of gathering the data and a few ways of mining it. For exam
 - Serverlessness
 - RightSizedness
 - Elegance
+- DRability
 
-##Actors
+## Actors
 
 At the moment the vteam of auditors consists of 
 - virtual mikec
