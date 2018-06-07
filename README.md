@@ -40,17 +40,17 @@ can go onto a backlog.
 | Security | Does the code follow AWS' security best practices | ? |
 | Scalability | Do the instances scale up and down | % of instances in ASGs |
 | Reliability | The inbuilt AWS reliability features are utilised | % of AZs that are used |
-| Tagged | ? | ? 
-| IaC | ? | ? 
+| Tagged | Taggable resources have RI standard tags | % of tags in place and correct
+| IaC | The infra is in Terraform | % of discovered resources formed by Terraform |
 | Standards conformance | ? | ? 
-| UptoDateness | ? | ? 
-| Documentation | ? | ? 
+| UptoDateness | The Code is running up to date (major version only) of software | ? 
+| Documentation | Every component is documented | Check for Readmes?
 | Supportability | ? | ? 
 | CostEfficiency | ? | ? 
-| Serverlessness | ? | ? 
-| RightSizedness | ? | ? 
+| Serverlessness | Code is run serverless | ? 
+| RightSizedness | The instance types are correct | ? 
 | Elegance | ? | ? 
-| DRability | ? | ? 
+| DRability | ? | % of Production objects stored in multiple regions? 
 
 ## Actors
 
