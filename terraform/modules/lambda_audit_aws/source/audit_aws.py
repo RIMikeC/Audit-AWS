@@ -54,4 +54,5 @@ response=asg.describe_auto_scaling_groups()
 for group in response['AutoScalingGroups']:
     print(json.dumps({group['AutoScalingGroupName']:[{'Min':group['MinSize'],'Max':group['MaxSize'],'Desired':group['DesiredCapacity'],'Current':len(group['Instances'])}]}, indent=4))
 
+print()
 

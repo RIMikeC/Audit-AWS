@@ -58,3 +58,7 @@ At the moment the vteam of auditors consists of
 - virtual mikec
 - virtual ginge
 - virtual dand
+
+## Design
+
+![pic](https://github.com/RIMikeC/Audit-AWS/images.Picture1.png)
