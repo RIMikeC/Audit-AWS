@@ -14,7 +14,7 @@ There are a few ways of gathering the data and a few ways of mining it. For exam
 
    This is neat, because the data is already there and always available
 
-   but holy crap its hard slog to parse it, every env for every product team will have thousands of lines of JSON to wade through
+   but holy crap it's a hard slog to parse it, every env for every product team will have thousands of lines of JSON to wade through
 
 - Whip up some bash scripts to use the CLI
 
@@ -61,4 +61,4 @@ At the moment the vteam of auditors consists of
 
 ## Design
 
-![pic](https://github.com/RIMikeC/Audit-AWS/images.Picture1.png)
+![pic](https://github.com/RIMikeC/Audit-AWS/images/Picture1.png)
