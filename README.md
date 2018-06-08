@@ -61,4 +61,4 @@ At the moment the vteam of auditors consists of
 
 ## Design
 
-![pic](https://github.com/RIMikeC/Audit-AWS/images/Picture1.png)
+![pic](https://github.com/RIMikeC/Audit-AWS/blob/master/images/Picture1.png)
