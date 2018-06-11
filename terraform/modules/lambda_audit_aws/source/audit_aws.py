@@ -25,6 +25,12 @@ except Exception as e:
     print("ERROR: failed to connect to ASG client")
     sys.exit(1)
 
+try:
+    ecs=boto3.client('ecs',region_name = 'eu-west-1')
+except Exception as e:
+    print("ERROR: failed to connect to ECS client")
+    sys.exit(1)
+
 #def lambda_handler(event, context):  
 #todays_date=datetime.date.today()
 
@@ -55,4 +61,18 @@ for group in response['AutoScalingGroups']:
     print(json.dumps({group['AutoScalingGroupName']:[{'Min':group['MinSize'],'Max':group['MaxSize'],'Desired':group['DesiredCapacity'],'Current':len(group['Instances'])}]}, indent=4))
 
 print()
+
+response=ecs.list_clusters()
+print("Cluster,Registered Container Instance")
+for cluster_arn in response['clusterArns']:
+    container_instances=ecs.list_container_instances(cluster=cluster_arn)
+    for container_instance in container_instances['containerInstanceArns']:
+        print(cluster_arn,container_instance,sep=',')
+
+print()
+
+response=ecs.list_clusters()
+for cluster_arn in response['clusterArns']:
+    container_instances=ecs.list_container_instances(cluster=cluster_arn)
+    print(json.dumps({cluster_arn:{'Instance':[container_instances]}}, indent=4))
 
