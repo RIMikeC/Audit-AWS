@@ -16,43 +16,52 @@ There are a few ways of gathering the data and a few ways of mining it. For exam
 
    This is neat, because the data is already there and always available
 
-   but holy crap it's a hard slog to parse it, every env for every product team will have thousands of lines of JSON to wade through
+   but holy crap it's a hard slog to parse it; every environment for every product team will have *thousands* of lines of JSON to wade through
 
-- Whip up some bash scripts to use the CLI
+- Whip up some bash scripts to use the CLI locally
 
    Quick and painless to develop
 
-   but it forces us to use JSON and is impractical unless run locally, which implies lots of role-switching, which seems a bit dumb
+   but it forces us to use JSON and it implies lots of role-switching, which seems a bit dumb
 
-   it will also inevitably lead to IAM problems and life is too short for this type of pain
+   it will also inevitably leads to IAM problems and life is too short for this type of pain
 
-- Write the data-gathering as a shared lambda, then teams can run it themselves
+- Whip up a CLI script to run on an existing host e.g. a transit host or jumpbox
+
+   Quick and painless to develop
+
+   Dumb. Painful to implement and to support
+
+- Write the data-gathering as a shared lambda, then competitor teams can run it themselves
 
    hmmm seems to be a decent option. We'd be able to choose what we looked at and choose an appropriate output format and location
 
    we'd also need to write custom code to mine the data, either that or drag it into Excel as a CSV
 
-## Criteria
+## Criteria for v1
 
-Here are some possible criteria. I suggest we pick the ones that will be simplest to code. Any others that look interesting
-can go onto a backlog.
- 
-| Criteria | Description | Metric
+| Metric Name | Description | Possible Calculation
 |---|---|---
-| Security | Does the code follow AWS' security best practices | ? |
-| Scalability | Do the instances scale up and down | % of instances in ASGs |
-| Reliability | The inbuilt AWS reliability features are utilised | % of AZs that are used |
+| Security | Does the code follow AWS' security best practices. What are these? | % practices followed
+| Scalability | The instances scale up and down | % of instances in ASGs where the des is less than max?
+| Reliability | The inbuilt AWS reliability features are utilised | % of instances that are in 3-AZ ASGs?
 | Tagged | Taggable resources have RI standard tags | % of tags in place and correct
-| IaC | The infra is in Terraform | % of discovered resources formed by Terraform |
-| Standards conformance | ? | ? 
-| UptoDateness | The Code is running up to date (major version only) of software | ? 
-| Documentation | Every component is documented | Check for Readmes?
-| Supportability | ? | ? 
-| CostEfficiency | ? | ? 
-| Serverlessness | Code is run serverless | ? 
-| RightSizedness | The instance types are correct | ? 
+| Serverlessness | Code is run serverless | % of workloads that COULD be servless that actually ARE serverless
+| DRability | Critical/sensitive data is copied to another region | % of Production stores in multiple regions? 
+
+## Criteria backlog
+
+| Metric Name | Description | Possible Calculation
+|---|---|---
+| IaC | The infra is in Terraform | % of discovered resources formed by Terraform | ?
+| Standards conformance | Sounds good, but we don't actually have standards | n/a
 | Elegance | ? | ? 
-| DRability | ? | % of Production objects stored in multiple regions? 
+| CostEfficiency | ? | ? 
+| RightSizedness | The instance types are correct | ? 
+| UptoDateness | The Code is running up to date (major version only) of software | ?
+| Supportability | ? | ? 
+| Documentation | Every component is documented | ?
+| Interoperability | Can the code be run on another errrr  something? | 
 
 ## Actors
 
