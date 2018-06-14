@@ -31,13 +31,9 @@ data "aws_iam_policy_document" "aws_game_policy_document" {
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
-      "ec2:CreateNetworkInterface",
-      "ec2:DescribeNetworkInterfaces",
-      "ec2:DeleteNetworkInterface",
-      "sns:Publish",
       "cloudwatch:*",
-      "ce:GetCostAndUsage",
-      "events:EnableRule",
+      "s3:ListBucket",
+      "s3:PutObject",
     ]
 
     resources = ["*"]
