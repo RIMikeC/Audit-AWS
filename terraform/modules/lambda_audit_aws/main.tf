@@ -31,13 +31,11 @@ data "aws_iam_policy_document" "audit_lambda_policy_document" {
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
-      "ec2:CreateNetworkInterface",
-      "ec2:DescribeNetworkInterfaces",
-      "ec2:DeleteNetworkInterface",
-      "sns:Publish",
       "cloudwatch:*",
-      "ce:GetCostAndUsage",
       "events:EnableRule",
+      "autoscaling:DescribeAutoScalingGroups",
+      "s3:ListBucket",
+      "s3:PutObject",
     ]
 
     resources = ["*"]
