@@ -61,8 +61,8 @@ resource "aws_lambda_function" "judge" {
   source_code_hash = "${data.archive_file.lambda_audit_zip.output_base64sha256}"
   description      = "Judge for the AWS Game"
   handler          = "judge.lambda_handler"
-  memory_size      = "256"
-  timeout          = "20"
+  memory_size      = "128"
+  timeout          = "10"
   role             = "${aws_iam_role.aws_game.arn}"
   runtime          = "python3.6"
 
