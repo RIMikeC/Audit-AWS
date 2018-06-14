@@ -1,3 +1,54 @@
+
+resource "aws_iam_role" "audit_lambda" {
+  name = "audit_lambda_role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "audit_lambda_role_policy" {
+  name   = "audit_lambda_common_role"
+  role   = "${aws_iam_role.audit_lambda.id}"
+  policy = "${data.aws_iam_policy_document.audit_lambda_policy_document.json}"
+}
+
+data "aws_iam_policy_document" "audit_lambda_policy_document" {
+  statement {
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "ec2:CreateNetworkInterface",
+      "ec2:DescribeNetworkInterfaces",
+      "ec2:DeleteNetworkInterface",
+      "sns:Publish",
+      "cloudwatch:*",
+      "ce:GetCostAndUsage",
+      "events:EnableRule",
+    ]
+
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "audit_lambda_policy" {
+  name   = "audit_lambda_common_policy"
+  policy = "${data.aws_iam_policy_document.audit_lambda_policy_document.json}"
+}
+
 data "archive_file" "lambda_audit_zip" {
   type        = "zip"
   source_dir  = "${path.module}/source"
@@ -8,11 +59,11 @@ resource "aws_lambda_function" "audit" {
   function_name    = "Audit-AWS"
   filename         = "${path.module}/audit.zip"
   source_code_hash = "${data.archive_file.lambda_audit_zip.output_base64sha256}"
-  description      = "Dump AWS charges into CW"
+  description      = "audit AWS"
   handler          = "audit_aws.lambda_handler"
   memory_size      = "256"
   timeout          = "20"
-  role             = "${var.lambda_role}"
+  role             = "${aws_iam_role.audit_lambda.arn}"
   runtime          = "python3.6"
 
   environment = {
@@ -27,7 +78,7 @@ resource "aws_lambda_function" "audit" {
 resource "aws_cloudwatch_event_rule" "audit_schedule" {
   name                = "audit_schedule"
   description         = "Periodically invokes audit"
-  schedule_expression = "cron(0 8 * * ? *)"
+  schedule_expression = "cron(0,20,40 * * * ? *)"
   is_enabled          = true
   depends_on          = ["aws_lambda_function.audit"]
 }

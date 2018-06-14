@@ -37,7 +37,7 @@ data "aws_iam_policy_document" "s3_bucket" {
   statement {
     effect    = "Allow"
     actions   = ["s3:PutObject"]
-    resources = ["arn:aws:s3:::${var.s3_bucket_name}/*"]
+    resources = ["arn:aws:s3:::${var.s3_bucket_name}/audit/*"]
 
     principals = {
       type        = "AWS"
