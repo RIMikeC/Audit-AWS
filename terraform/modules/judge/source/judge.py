@@ -1,8 +1,8 @@
-# audit_aws.py
+# judge.py
 #
 # By Mike C
 #
-# 15th June 2018
+# 25th June 2018
 #
 # Collect AWS resources for Ireland
 
@@ -14,7 +14,6 @@ import json
 import datetime
 
 bucket_name='ri-aws-audit'
-object_name='test.txt'
 
 try:
     ec2=boto3.client('ec2',region_name = 'eu-west-1')
@@ -49,21 +48,19 @@ except Exception as e:
 
 account_id=sts.get_caller_identity()['Account']
 
-#def lambda_handler(event, context):  
-
-#response=ec2.describe_instances()
-#
-#s3.put_object(Bucket=bucket_name, Key='audit/{}/ec1.json'.format(account_id), Body=json.dumps(response['Reservations'], indent=4))
-#
-#for reservation in response['Reservations']:
-#    for instance in reservation['Instances']:
-#        print("Adding EC2")
-#
-#        s3.put_object(Bucket=bucket_name, Key='audit/{}/ec2.json'.format(account_id), Body=json.dumps({instance['InstanceId']:[{'AMI':instance['ImageId'],'Size':instance['InstanceType'],'Tags':[{'Key':'k','Value':'v'}]}]}, indent=4))
-
-response=asg.describe_auto_scaling_groups()
-s3.put_object(Bucket=bucket_name, Key='audit/{}/all_asg.json'.format(account_id), Body=json.dumps(response, indent=4, sort_keys=True, default=str))
-for group in response['AutoScalingGroups']:
-    s3.put_object(Bucket=bucket_name, Key='audit/{}/asg.{}json'.format(account_id,group['AutoScalingGroupName']), Body=json.dumps({group['AutoScalingGroupName']:[{'Min':group['MinSize'],'Max':group['MaxSize'],'Desired':group['DesiredCapacity'],'Current':len(group['Instances'])}]}, indent=4))
+def lambda_handler(event, context):  
+    bucket = event['Records'][0]['s3']['bucket']['name']
+    print("bucket is: ",bucket)
+    key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
+    print("key is: ",key)
+    print()
+    try:
+        response = s3.get_object(Bucket=bucket, Key=key)
+        print("CONTENT TYPE: " + response['ContentType'])
+        return response['ContentType']
+    except Exception as e:
+        print(e)
+        print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
+        raise e
 
 
