@@ -33,7 +33,7 @@ data "aws_iam_policy_document" "aws_game_policy_document" {
       "logs:PutLogEvents",
       "cloudwatch:*",
       "s3:ListBucket",
-      "s3:getObject",
+      "s3:GetObject",
     ]
 
     resources = ["*"]
