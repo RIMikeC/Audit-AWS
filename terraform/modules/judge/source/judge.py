@@ -11,6 +11,7 @@
 import boto3
 import sys
 import json
+import urllib.parse
 import datetime
 
 bucket_name='ri-aws-audit'
