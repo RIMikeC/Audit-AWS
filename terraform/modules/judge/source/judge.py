@@ -57,11 +57,10 @@ def lambda_handler(event, context):
     print()
     try:
         response = s3.get_object(Bucket=bucket, Key=key)
-        print("CONTENT TYPE: " + response['ContentType'])
-        return response['ContentType']
+        json_data = response['Body'].read()
+        print(json_data)
     except Exception as e:
         print(e)
         print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
         raise e
-
 
