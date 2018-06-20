@@ -1,3 +1,6 @@
 terraform.tfstate
 terraform.tfstate.backup
 .terraform/
+__pycache__
+.pyc
+boto3/

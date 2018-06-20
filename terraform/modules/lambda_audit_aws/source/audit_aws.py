@@ -14,7 +14,7 @@ import json
 import datetime
 
 bucket_name='ri-aws-audit'
-object_name='test.txt'
+todays_date=str(datetime.date.today())
 
 try:
     ec2=boto3.client('ec2',region_name = 'eu-west-1')
@@ -42,28 +42,19 @@ except Exception as e:
 
 try:
     sts=boto3.client('sts',region_name = 'eu-west-1')
+    account_id=sts.get_caller_identity()['Account']
 except Exception as e:
-    print(e,": failed to connect to sts client")
+    print(e,": failed to connect to STS client")
     sys.exit(1)
-
-
-account_id=sts.get_caller_identity()['Account']
 
 def lambda_handler(event, context):  
 
-#response=ec2.describe_instances()
-#
-#s3.put_object(Bucket=bucket_name, Key='audit/{}/ec1.json'.format(account_id), Body=json.dumps(response['Reservations'], indent=4))
-#
-#for reservation in response['Reservations']:
-#    for instance in reservation['Instances']:
-#        print("Adding EC2")
-#
-#        s3.put_object(Bucket=bucket_name, Key='audit/{}/ec2.json'.format(account_id), Body=json.dumps({instance['InstanceId']:[{'AMI':instance['ImageId'],'Size':instance['InstanceType'],'Tags':[{'Key':'k','Value':'v'}]}]}, indent=4))
+    response=ec2.describe_instances()
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_ec2.json'.format(account_id), todays_date, Body=json.dumps(response['Reservations'], indent=4))
 
     response=asg.describe_auto_scaling_groups()
-    s3.put_object(Bucket=bucket_name, Key='audit/{}/all_asg.json'.format(account_id), Body=json.dumps(response, indent=4, sort_keys=True, default=str))
-    for group in response['AutoScalingGroups']:
-        s3.put_object(Bucket=bucket_name, Key='audit/{}/asg{}.json'.format(account_id,group['AutoScalingGroupName']), Body=json.dumps({group['AutoScalingGroupName']:[{'Min':group['MinSize'],'Max':group['MaxSize'],'Desired':group['DesiredCapacity'],'Current':len(group['Instances'])}]}, indent=4))
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_asg.json'.format(account_id), todays_date, Body=json.dumps(response, indent=4, sort_keys=True, default=str))
+#    for group in response['AutoScalingGroups']:
+#        s3.put_object(Bucket=bucket_name, Key='audit/{}/asg{}.json'.format(account_id,group['AutoScalingGroupName']), Body=json.dumps({group['AutoScalingGroupName']:[{'Min':group['MinSize'],'Max':group['MaxSize'],'Desired':group['DesiredCapacity'],'Current':len(group['Instances'])}]}, indent=4))
     
 
