@@ -50,10 +50,10 @@ except Exception as e:
 def lambda_handler(event, context):  
 
     response=ec2.describe_instances()
-    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_ec2.json'.format(account_id), todays_date, Body=json.dumps(response['Reservations'], indent=4))
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_ec2.json'.format(account_id, todays_date), Body=json.dumps(response['Reservations'], indent=4))
 
     response=asg.describe_auto_scaling_groups()
-    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_asg.json'.format(account_id), todays_date, Body=json.dumps(response, indent=4, sort_keys=True, default=str))
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_asg.json'.format(account_id, todays_date), Body=json.dumps(response, indent=4, sort_keys=True, default=str))
 #    for group in response['AutoScalingGroups']:
 #        s3.put_object(Bucket=bucket_name, Key='audit/{}/asg{}.json'.format(account_id,group['AutoScalingGroupName']), Body=json.dumps({group['AutoScalingGroupName']:[{'Min':group['MinSize'],'Max':group['MaxSize'],'Desired':group['DesiredCapacity'],'Current':len(group['Instances'])}]}, indent=4))
     
