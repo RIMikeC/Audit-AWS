@@ -74,5 +74,5 @@ def lambda_handler(event, context):
     data = json.loads(json_data)
     
     if 'all_ec2.json' in key: mark_ec2(data)
-    elif 'all_asg.json' in key: mark_asg(data)
+        elif 'all_asg.json' in key: mark_asg(data)
 

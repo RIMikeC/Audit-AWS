@@ -3,7 +3,7 @@ import boto3
 import json
 s3=boto3.client('s3',region_name = 'eu-west-1')
 bucket='ri-aws-audit'
-key='audit/460402331925/all_asg.json'
+key='audit/460402331925/2018-06-21/all_asg.json'
 response = s3.get_object(Bucket=bucket, Key=key)
 json_data = response['Body'].read()
 data = json.loads(json_data)

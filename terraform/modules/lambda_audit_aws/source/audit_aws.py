@@ -47,6 +47,12 @@ except Exception as e:
     print(e,": failed to connect to STS client")
     sys.exit(1)
 
+try:
+    lambs=boto3.client('lambda')
+except: Exception as e:
+    print(e,": failed to connect to lambda client")
+    sys.exit(1)
+
 def lambda_handler(event, context):  
 
     response=ec2.describe_instances()
@@ -55,9 +61,9 @@ def lambda_handler(event, context):
     response=asg.describe_auto_scaling_groups()
     s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_asg.json'.format(account_id, todays_date), Body=json.dumps(response, indent=4, sort_keys=True, default=str))
 
+    response=lambs.list_functions()
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_lambdas.json'.format(account_id, todays_date), Body=json.dumps(response, indent=4, sort_keys=True, default=str))
 
 
-#    for group in response['AutoScalingGroups']:
-#        s3.put_object(Bucket=bucket_name, Key='audit/{}/asg{}.json'.format(account_id,group['AutoScalingGroupName']), Body=json.dumps({group['AutoScalingGroupName']:[{'Min':group['MinSize'],'Max':group['MaxSize'],'Desired':group['DesiredCapacity'],'Current':len(group['Instances'])}]}, indent=4))
-    
+
 
