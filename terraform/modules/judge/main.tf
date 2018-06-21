@@ -58,7 +58,7 @@ resource "aws_lambda_function" "judge" {
   description      = "Judge for the AWS Game"
   handler          = "judge.lambda_handler"
   memory_size      = "128"
-  timeout          = "10"
+  timeout          = "30"
   role             = "${aws_iam_role.aws_game.arn}"
   runtime          = "python3.6"
 
