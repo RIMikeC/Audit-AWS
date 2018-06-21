@@ -49,7 +49,7 @@ except Exception as e:
 
 try:
     lambs=boto3.client('lambda')
-except: Exception as e:
+except Exception as e:
     print(e,": failed to connect to lambda client")
     sys.exit(1)
 
