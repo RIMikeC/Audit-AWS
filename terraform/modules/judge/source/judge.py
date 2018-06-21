@@ -13,6 +13,7 @@ import sys
 import json
 import urllib.parse
 import datetime
+import time
 
 bucket_name='ri-aws-audit'
 
@@ -49,24 +50,28 @@ except Exception as e:
 
 def mark_ec2(data):
     print("fake marking ec2")
+    return(2)
 
 def mark_asg(data):
     not_scaling=0
     for asg_map in data['AutoScalingGroups']:
         if asg_map['DesiredCapacity']==asg_map['MinSize']==asg_map['MaxSize']: not_scaling=not_scaling+1
     print(int(100*not_scaling/len(data['AutoScalingGroups'])))
+    return
 
 def mark_lambdas(data):
     print("list of lambdas")
     print(data)
+    return
 
+def mark_serverlessness(ins,lams):
+    print("serverlessness ",ins,lams)
+    return()
 
 def lambda_handler(event, context):  
     bucket = event['Records'][0]['s3']['bucket']['name']
-    print("bucket is: ",bucket)
     key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
-    print("key is: ",key)
-    print()
+    print("bucket is: ",bucket,"   key is: ",key)
     try:
         response = s3.get_object(Bucket=bucket, Key=key)
     except Exception as e:
@@ -76,8 +81,15 @@ def lambda_handler(event, context):
 
     json_data = response['Body'].read()
     data = json.loads(json_data)
+
+    instance_count=0
+    lambda_count=0
     
-    if 'all_ec2.json' in key: mark_ec2(data)
+    if 'all_ec2.json' in key: instance_count=mark_ec2(data)
     elif 'all_asg.json' in key: mark_asg(data)
-    elif 'all_lambdas_asg.json' in key: mark_lambdas(data)
+    elif 'all_lambdas_asg.json' in key: 
+        time.sleep(1)
+        lambda_count=mark_lambdas(data)
+        mark_serverlessness(instance_count,lambda_count)
+
 
