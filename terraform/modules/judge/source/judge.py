@@ -60,9 +60,7 @@ def mark_asg(data):
     return
 
 def mark_lambdas(data):
-    print("list of lambdas")
-    print(data)
-    return
+    return(len(data['Functions']))
 
 def mark_serverlessness(ins,lams):
     print("serverlessness ",ins,lams)
