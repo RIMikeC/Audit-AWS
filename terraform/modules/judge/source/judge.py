@@ -85,9 +85,9 @@ def lambda_handler(event, context):
     instance_count=0
     lambda_count=0
     
-    if 'all_ec2.json' in key: instance_count=mark_ec2(data)
-    elif 'all_asg.json' in key: mark_asg(data)
-    elif 'all_lambdas_asg.json' in key: 
+    if   'all_ec2.json'     in key: instance_count=mark_ec2(data)
+    elif 'all_asg.json'     in key: mark_asg(data)
+    elif 'all_lambdas.json' in key: 
         time.sleep(1)
         lambda_count=mark_lambdas(data)
         mark_serverlessness(instance_count,lambda_count)
