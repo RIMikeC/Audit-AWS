@@ -36,6 +36,7 @@ data "aws_iam_policy_document" "audit_lambda_policy_document" {
       "autoscaling:DescribeAutoScalingGroups",
       "s3:ListBucket",
       "s3:PutObject",
+      "ec2:DescribeInstances",
     ]
 
     resources = ["*"]

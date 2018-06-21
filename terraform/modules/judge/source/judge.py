@@ -42,12 +42,12 @@ except Exception as e:
 
 try:
     sts=boto3.client('sts',region_name = 'eu-west-1')
+    account_id=sts.get_caller_identity()['Account']
 except Exception as e:
     print(e,": failed to connect to sts client")
     sys.exit(1)
 
 
-account_id=sts.get_caller_identity()['Account']
 
 def lambda_handler(event, context):  
     bucket = event['Records'][0]['s3']['bucket']['name']
@@ -58,9 +58,16 @@ def lambda_handler(event, context):
     try:
         response = s3.get_object(Bucket=bucket, Key=key)
         json_data = response['Body'].read()
-        print(json_data)
+        data = json.loads(json_data)
     except Exception as e:
         print(e)
         print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
         raise e
+
+    not_scaling=0
+    
+    for asg_map in data['AutoScalingGroups']:
+        if asg_map['DesiredCapacity']==asg_map['MinSize']==asg_map['MaxSize']: not_scaling=not_scaling+1
+    print(int(100*not_scaling/len(data['AutoScalingGroups'])))
+
 
