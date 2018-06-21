@@ -56,6 +56,10 @@ def mark_asg(data):
         if asg_map['DesiredCapacity']==asg_map['MinSize']==asg_map['MaxSize']: not_scaling=not_scaling+1
     print(int(100*not_scaling/len(data['AutoScalingGroups'])))
 
+def mark_lambdas(data):
+    print("list of lambdas")
+    print(data)
+
 
 def lambda_handler(event, context):  
     bucket = event['Records'][0]['s3']['bucket']['name']
@@ -75,4 +79,5 @@ def lambda_handler(event, context):
     
     if 'all_ec2.json' in key: mark_ec2(data)
     elif 'all_asg.json' in key: mark_asg(data)
+    elif 'all_lambdas_asg.json' in key: mark_lambdas(data)
 
