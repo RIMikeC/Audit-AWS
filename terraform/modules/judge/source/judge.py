@@ -60,9 +60,11 @@ def mark_asg(data):
     return
 
 def mark_lambdas(data):
-    return(len(data['Functions']))
+    lamba_count=len(data['Functions'])
+
 
 def mark_serverlessness(ins,lams):
+    time.sleep(1)
     print("serverlessness ",ins,lams)
     return()
 
@@ -80,14 +82,10 @@ def lambda_handler(event, context):
     json_data = response['Body'].read()
     data = json.loads(json_data)
 
-    instance_count=0
     lambda_count=0
     
-    if   'all_ec2.json'     in key: instance_count=mark_ec2(data)
+    if   'all_ec2.json'     in key: mark_ec2(data)
     elif 'all_asg.json'     in key: mark_asg(data)
-    elif 'all_lambdas.json' in key: 
-        time.sleep(1)
-        lambda_count=mark_lambdas(data)
-        mark_serverlessness(instance_count,lambda_count)
+    elif 'all_lambdas.json' in key: mark_lambdas(data)
 
 

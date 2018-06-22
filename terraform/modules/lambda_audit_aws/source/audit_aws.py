@@ -55,14 +55,18 @@ except Exception as e:
 
 def lambda_handler(event, context):  
 
+    ec2_count=0
     response=ec2.describe_instances()
     s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_ec2.json'.format(account_id, todays_date), Body=json.dumps(response['Reservations'], indent=4, sort_keys=True, default=str))
+    for i in response['Reservations']:
+        ec2_count=ec2_count+len(i['Instances'])
 
     response=asg.describe_auto_scaling_groups()
     s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_asg.json'.format(account_id, todays_date), Body=json.dumps(response, indent=4, sort_keys=True, default=str))
 
     response=lambs.list_functions()
     s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_lambdas.json'.format(account_id, todays_date), Body=json.dumps(response, indent=4, sort_keys=True, default=str))
+    lambda_count=len(response['Functions'])
 
 
 
