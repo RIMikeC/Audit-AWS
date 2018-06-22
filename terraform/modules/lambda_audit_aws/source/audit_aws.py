@@ -68,4 +68,6 @@ def lambda_handler(event, context):
     s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_lambdas.json'.format(account_id, todays_date), Body=json.dumps(response, indent=4, sort_keys=True, default=str))
     lambda_count=len(response['Functions'])
 
-    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/stats.json'.format(account_id, todays_date), Body=json.dumps({'Date':'121212','User':'1234456773','Stats':[{'EC2':'1','ASG':'2','lambda':'3'}]}, indent=4))
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/stats.json'.format(account_id, todays_date), Body=json.dumps({'Date':todays_date,'User':account_id,'Stats':[{'EC2Count':ec2_count,'lambdaCount':lambda_count}]}, indent=4))
+
+
