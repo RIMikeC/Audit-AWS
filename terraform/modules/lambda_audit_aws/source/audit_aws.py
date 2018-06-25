@@ -68,6 +68,23 @@ def lambda_handler(event, context):
     s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_lambdas.json'.format(account_id, todays_date), Body=json.dumps(response, indent=4, sort_keys=True, default=str))
     lambda_count=len(response['Functions'])
 
-    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/stats.json'.format(account_id, todays_date), Body=json.dumps({'Date':todays_date,'User':account_id,'Stats':[{'EC2Count':ec2_count,'lambdaCount':lambda_count}]}, indent=4))
+    response=ec2.describe_vpcs()
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_vpc.json'.format(account_id, todays_date), Body=json.dumps(response['Vpcs'], indent=4, sort_keys=True, default=str))
+    vpc_count=len(respnse['Vpcs'])
 
+    response=ec2.describe_subnets()
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_subnet.json'.format(account_id, todays_date), Body=json.dumps(response['Subnets'], indent=4, sort_keys=True, default=str))
+    subnet_count=len(response['Subnets'])
+
+    response=ec2.describe_internet_gateways()
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_igw.json'.format(account_id, todays_date), Body=json.dumps(response['InternetGateways'], indent=4, sort_keys=True, default=str))
+    subnet_count=len(response['InternetGateways'])
+
+    response=ec2.describe_route_tables()
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_routetables.json'.format(account_id, todays_date), Body=json.dumps(response['RouteTables'], indent=4, sort_keys=True, default=str))
+    subnet_count=len(response['RouteTables'])
+
+
+
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/stats.json'.format(account_id, todays_date), Body=json.dumps({'Date':todays_date,'User':account_id,'Stats':[{'EC2Count':ec2_count,'lambdaCount':lambda_count}]}, indent=4))
 
