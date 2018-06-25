@@ -31,12 +31,15 @@ data "aws_iam_policy_document" "audit_lambda_policy_document" {
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
-      "cloudwatch:*",
       "events:EnableRule",
       "autoscaling:DescribeAutoScalingGroups",
       "s3:ListBucket",
       "s3:PutObject",
       "ec2:DescribeInstances",
+      "ec2:DescribeRouteTables",
+      "ec2:DescribeVpcs",
+      "ec2:DescribeSubnets",
+      "ec2:DescribeInternetGateways",
       "lambda:ListFunctions",
     ]
 
