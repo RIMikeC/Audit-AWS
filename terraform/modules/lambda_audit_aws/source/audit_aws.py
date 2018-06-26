@@ -106,7 +106,7 @@ def lambda_handler(event, context):
     # Get the tags
 
     response=ec2.describe_tags(Filters=[{'Name':'key','Values':['Name','programme','cost_centre','environment','security_class','repo','terraform','project','product']}])
-    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_tags.json'.format(account_id, todays_date), Body=json.dumps(response['Tags'], indent=4, sort_keys=True, default=str), Tagging='Name=all_tags'+audit_tags))
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_tags.json'.format(account_id, todays_date), Body=json.dumps(response['Tags'], indent=4, sort_keys=True, default=str), Tagging='Name=all_tags'+audit_tags)
     tag_count=len(response['Tags'])
 
     # Create a new object, which contains statistics collected by the lines above
