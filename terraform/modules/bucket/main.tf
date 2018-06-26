@@ -5,17 +5,7 @@ resource "aws_s3_bucket" "audit_storage" {
   bucket        = "${var.s3_bucket_name}"
   request_payer = "Requester"
   policy        = "${data.aws_iam_policy_document.s3_bucket.json}"
-
-  tags {
-    environment    = "production"
-    project_name   = "AWS Audit"
-    programme      = "AWS Audit"
-    product        = "AWS Audit"
-    cost_centre    = "unknown"
-    security_class = "public"
-    terraform      = "true"
-    repo           = "https://github.com/RIMikeC/Audit-AWS"
-  }
+  tags          = "${var.bucket_tags}"
 
   versioning {
     enabled = false

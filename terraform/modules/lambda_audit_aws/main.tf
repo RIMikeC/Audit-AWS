@@ -83,7 +83,7 @@ resource "aws_cloudwatch_event_rule" "audit_schedule" {
   name                = "audit_schedule"
   description         = "Periodically invokes audit"
   schedule_expression = "cron(0,20,40 * * * ? *)"
-  is_enabled          = true
+  is_enabled          = false
   depends_on          = ["aws_lambda_function.audit"]
 }
 
