@@ -40,6 +40,7 @@ data "aws_iam_policy_document" "audit_lambda_policy_document" {
       "ec2:DescribeVpcs",
       "ec2:DescribeSubnets",
       "ec2:DescribeInternetGateways",
+      "ec2:DescribeTags",
       "lambda:ListFunctions",
     ]
 
