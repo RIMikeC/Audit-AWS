@@ -54,6 +54,18 @@ except Exception as e:
     print(e,": failed to connect to lambda client")
     sys.exit(1)
 
+try:
+    kinesis=boto3.client('kinesis')
+except Exception as e:
+    print(e,": failed to connect to kinesis client")
+    sys.exit(1)
+
+try:
+    rds=boto3.client('rds')
+except Exception as e:
+    print(e,": failed to connect to rds client")
+    sys.exit(1)
+
 def lambda_handler(event, context):  
 
     # Each of the following sections uses an SDK low-level client to describe an AWS resource, then writes that output as a new S3 object.
@@ -121,6 +133,18 @@ def lambda_handler(event, context):
     s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_ecs.json'.format(account_id, todays_date), Body=json.dumps(response,indent=4, sort_keys=True, default=str), Tagging='Name=all_ecs'+audit_tags)
     ec2containercluster_count=len(response['clusterArns'])
 
+    # Get the Kinesis streams
+
+    response=kinesis.list_streams()
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_streams.json'.format(account_id, todays_date), Body=json.dumps(response,indent=4, sort_keys=True, default=str), Tagging='Name=all_streams'+audit_tags)
+    stream_count=len(response['StreamNames'])
+
+    # Get the RDS streams
+
+    response=rds.describe_db_clusters()
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_rds.json'.format(account_id, todays_date), Body=json.dumps(response,indent=4, sort_keys=True, default=str), Tagging='Name=all_rds_clusters'+audit_tags)
+    rds_cluster_count=len(response['DBClusters'])
+
     # Get the tags
 
     response=ec2.describe_tags(Filters=[{'Name':'key','Values':['Name','programme','cost_centre','environment','security_class','repo','terraform','project','product']}])
@@ -129,5 +153,5 @@ def lambda_handler(event, context):
 
     # Create a new object, which contains statistics collected by the lines above
 
-    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/stats.json'.format(account_id, todays_date), Body=json.dumps({"Statistics":[{'Date':todays_date,'User':account_id,'ResourceCounts':[{'EC2':ec2_count,'lambda':lambda_count,'ASG':asg_count,'VPC':vpc_count,'Subnet':subnet_count,'Bucket':bucket_count,'Peer':peer_count,'Tag':tag_count,'ECSclusters':ec2containercluster_count}]}]}, indent=4), Tagging='Name=stats'+audit_tags)
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/stats.json'.format(account_id, todays_date), Body=json.dumps({"Statistics":[{'Date':todays_date,'User':account_id,'ResourceCounts':[{'EC2':ec2_count,'lambda':lambda_count,'ASG':asg_count,'VPC':vpc_count,'Subnet':subnet_count,'Bucket':bucket_count,'Peer':peer_count,'Tag':tag_count,'ECSclusters':ec2containercluster_count,'Streams':stream_count,'RDSClusters':rds_cluster_count}]}]}, indent=4), Tagging='Name=stats'+audit_tags)
 
