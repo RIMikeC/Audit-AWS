@@ -1,7 +1,7 @@
 variable "contestants" {
   type        = "list"
   description = "Contestants IDs"
-  default     = ["666469064441"]
+  default     = ["666469064441","460402331925"]
 }
 
 variable "s3_bucket_name" {
