@@ -63,7 +63,7 @@ def lambda_handler(event, context):
 
     ec2_count=0
     response=ec2.describe_instances()
-    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_ec2s.json'.format(account_id, todays_date), Body=json.dumps(response['Reservations'], indent=4, sort_keys=True, default=str), Tagging='Name=all_ec2s'+audit_tags)
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_ec2s.json'.format(account_id, todays_date), Body=json.dumps(response, indent=4, sort_keys=True, default=str), Tagging='Name=all_ec2s'+audit_tags)
     for i in response['Reservations']:
         ec2_count=ec2_count+len(i['Instances'])
 
@@ -82,46 +82,46 @@ def lambda_handler(event, context):
     # Get the virtual private clouds
 
     response=ec2.describe_vpcs()
-    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_vpcs.json'.format(account_id, todays_date), Body=json.dumps(response['Vpcs'], indent=4, sort_keys=True, default=str), Tagging='Name=all_vpcs'+audit_tags)
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_vpcs.json'.format(account_id, todays_date), Body=json.dumps(response, indent=4, sort_keys=True, default=str), Tagging='Name=all_vpcs'+audit_tags)
     vpc_count=len(response['Vpcs'])
 
     # Get the subnets
 
     response=ec2.describe_subnets()
-    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_subnets.json'.format(account_id, todays_date), Body=json.dumps(response['Subnets'], indent=4, sort_keys=True, default=str), Tagging='Name=all_subnets'+audit_tags)
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_subnets.json'.format(account_id, todays_date), Body=json.dumps(response, indent=4, sort_keys=True, default=str), Tagging='Name=all_subnets'+audit_tags)
     subnet_count=len(response['Subnets'])
 
     # Get the internet gateways
     
     response=ec2.describe_internet_gateways()
-    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_igws.json'.format(account_id, todays_date), Body=json.dumps(response['InternetGateways'], indent=4, sort_keys=True, default=str), Tagging='Name=all_igws'+audit_tags)
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_igws.json'.format(account_id, todays_date), Body=json.dumps(response, indent=4, sort_keys=True, default=str), Tagging='Name=all_igws'+audit_tags)
     subnet_count=len(response['InternetGateways'])
 
     # Get the route tables
 
     response=ec2.describe_route_tables()
-    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_routetables.json'.format(account_id, todays_date), Body=json.dumps(response['RouteTables'], indent=4, sort_keys=True, default=str), Tagging='Name=all_routetables'+audit_tags)
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_routetables.json'.format(account_id, todays_date), Body=json.dumps(response, indent=4, sort_keys=True, default=str), Tagging='Name=all_routetables'+audit_tags)
     subnet_count=len(response['RouteTables'])
 
     # Get the buckets
 
     response=s3.list_buckets()
-    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_buckets.json'.format(account_id, todays_date), Body=json.dumps(response['Buckets'],indent=4, sort_keys=True, default=str), Tagging='Name=all_buckets'+audit_tags)
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_buckets.json'.format(account_id, todays_date), Body=json.dumps(response,indent=4, sort_keys=True, default=str), Tagging='Name=all_buckets'+audit_tags)
     bucket_count=len(response['Buckets'])
 
     # Get the peering connections
 
     response=ec2.describe_vpc_peering_connections()
-    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_peering.json'.format(account_id, todays_date), Body=json.dumps(response['VpcPeeringConnections'],indent=4, sort_keys=True, default=str), Tagging='Name=all_peering'+audit_tags)
-    bucket_count=len(response['VpcPeeringConnections'])
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_peering.json'.format(account_id, todays_date), Body=json.dumps(response,indent=4, sort_keys=True, default=str), Tagging='Name=all_peering'+audit_tags)
+    peer_count=len(response['VpcPeeringConnections'])
 
     # Get the tags
 
     response=ec2.describe_tags(Filters=[{'Name':'key','Values':['Name','programme','cost_centre','environment','security_class','repo','terraform','project','product']}])
-    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_tags.json'.format(account_id, todays_date), Body=json.dumps(response['Tags'], indent=4, sort_keys=True, default=str), Tagging='Name=all_tags'+audit_tags)
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_tags.json'.format(account_id, todays_date), Body=json.dumps(response, indent=4, sort_keys=True, default=str), Tagging='Name=all_tags'+audit_tags)
     tag_count=len(response['Tags'])
 
     # Create a new object, which contains statistics collected by the lines above
 
-    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/stats.json'.format(account_id, todays_date), Body=json.dumps({'Date':todays_date,'User':account_id,'Stats':[{'EC2Count':ec2_count,'lambdaCount':lambda_count,'ASGCount':asg_count,'VPCCount':vpc_count,'SubnetCount':subnet_count,'TagCount':tag_count}]}, indent=4), Tagging='Name=stats'+audit_tags)
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/stats.json'.format(account_id, todays_date), Body=json.dumps({"Statistics":[{'Date':todays_date,'User':account_id,'ResourceCounts':[{'EC2':ec2_count,'lambda':lambda_count,'ASG':asg_count,'VPC':vpc_count,'Subnet':subnet_count,'Bucket':bucket_count,'Peer':peer_count,'Tag':tag_count}]}]}, indent=4), Tagging='Name=stats'+audit_tags)
 
