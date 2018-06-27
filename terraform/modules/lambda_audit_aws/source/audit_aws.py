@@ -111,7 +111,7 @@ def lambda_handler(event, context):
 
     # Get the peering connections
 
-    response=ec2.VpcPeeringConnections()
+    response=ec2.describe_vpc_peering_connections()
     s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_peering.json'.format(account_id, todays_date), Body=json.dumps(response['VpcPeeringConnections'],indent=4, sort_keys=True, default=str), Tagging='Name=all_peering'+audit_tags)
     bucket_count=len(response['VpcPeeringConnections'])
 
