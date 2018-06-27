@@ -115,6 +115,12 @@ def lambda_handler(event, context):
     s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_peering.json'.format(account_id, todays_date), Body=json.dumps(response,indent=4, sort_keys=True, default=str), Tagging='Name=all_peering'+audit_tags)
     peer_count=len(response['VpcPeeringConnections'])
 
+    # Get the EC2 container clusters
+
+    response=ecs.list_clusters()
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_ecs.json'.format(account_id, todays_date), Body=json.dumps(response,indent=4, sort_keys=True, default=str), Tagging='Name=all_ecs'+audit_tags)
+    ec2containercluster_count=len(response['clusterArns'])
+
     # Get the tags
 
     response=ec2.describe_tags(Filters=[{'Name':'key','Values':['Name','programme','cost_centre','environment','security_class','repo','terraform','project','product']}])
@@ -123,5 +129,5 @@ def lambda_handler(event, context):
 
     # Create a new object, which contains statistics collected by the lines above
 
-    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/stats.json'.format(account_id, todays_date), Body=json.dumps({"Statistics":[{'Date':todays_date,'User':account_id,'ResourceCounts':[{'EC2':ec2_count,'lambda':lambda_count,'ASG':asg_count,'VPC':vpc_count,'Subnet':subnet_count,'Bucket':bucket_count,'Peer':peer_count,'Tag':tag_count}]}]}, indent=4), Tagging='Name=stats'+audit_tags)
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/stats.json'.format(account_id, todays_date), Body=json.dumps({"Statistics":[{'Date':todays_date,'User':account_id,'ResourceCounts':[{'EC2':ec2_count,'lambda':lambda_count,'ASG':asg_count,'VPC':vpc_count,'Subnet':subnet_count,'Bucket':bucket_count,'Peer':peer_count,'Tag':tag_count,'ECSclusters':ec2containercluster_count}]}]}, indent=4), Tagging='Name=stats'+audit_tags)
 
