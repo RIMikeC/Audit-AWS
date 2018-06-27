@@ -26,7 +26,7 @@ data "aws_caller_identity" "current" {}
 data "aws_iam_policy_document" "s3_bucket" {
   statement {
     effect    = "Allow"
-    actions   = ["s3:PutObject"]
+    actions   = ["s3:PutObject","s3:PutObjectAcl"]
     resources = ["arn:aws:s3:::${var.s3_bucket_name}/audit/*"]
 
     principals = {
