@@ -139,7 +139,7 @@ def lambda_handler(event, context):
     s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_streams.json'.format(account_id, todays_date), Body=json.dumps(response,indent=4, sort_keys=True, default=str), Tagging='Name=all_streams'+audit_tags)
     stream_count=len(response['StreamNames'])
 
-    # Get the RDS streams
+    # Get the RDS clusters
 
     response=rds.describe_db_clusters()
     s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_rds.json'.format(account_id, todays_date), Body=json.dumps(response,indent=4, sort_keys=True, default=str), Tagging='Name=all_rds_clusters'+audit_tags)
