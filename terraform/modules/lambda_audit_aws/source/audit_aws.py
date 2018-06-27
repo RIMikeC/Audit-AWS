@@ -103,6 +103,18 @@ def lambda_handler(event, context):
     s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_routetables.json'.format(account_id, todays_date), Body=json.dumps(response['RouteTables'], indent=4, sort_keys=True, default=str), Tagging='Name=all_routetables'+audit_tags)
     subnet_count=len(response['RouteTables'])
 
+    # Get the buckets
+
+    response=s3.list_buckets()
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_buckets.json'.format(account_id, todays_date), Body=json.dumps(response['Buckets'],indent=4, sort_keys=True, default=str), Tagging='Name=all_buckets'+audit_tags)
+    bucket_count=len(response['Buckets'])
+
+    # Get the peering connections
+
+    response=ec2.VpcPeeringConnections()
+    s3.put_object(Bucket=bucket_name, Key='audit/{}/{}/all_peering.json'.format(account_id, todays_date), Body=json.dumps(response['VpcPeeringConnections'],indent=4, sort_keys=True, default=str), Tagging='Name=all_peering'+audit_tags)
+    bucket_count=len(response['VpcPeeringConnections'])
+
     # Get the tags
 
     response=ec2.describe_tags(Filters=[{'Name':'key','Values':['Name','programme','cost_centre','environment','security_class','repo','terraform','project','product']}])
