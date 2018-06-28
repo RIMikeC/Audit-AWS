@@ -42,6 +42,7 @@ data "aws_iam_policy_document" "audit_lambda_policy_document" {
       "ec2:DescribeVpcPeeringConnections",
       "lambda:ListFunctions",
       "ecs:ListClusters",
+      "kinesis:ListStreams",
     ]
 
     resources = ["*"]
