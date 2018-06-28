@@ -1,3 +1,5 @@
+# Input variables for the audit
+
 variable "audit_schedule" {
   default     = "cron(0,20,40 * * * ? *)"
   type        = "string"
