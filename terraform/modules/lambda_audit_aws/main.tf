@@ -1,3 +1,9 @@
+# AWS audit lambda 
+
+# by mikec
+
+# June 2018
+
 resource "aws_iam_role" "audit_lambda" {
   name = "audit_lambda_role"
 
@@ -79,12 +85,12 @@ resource "aws_lambda_function" "audit" {
   }
 }
 
-# Create a new schedule to run it at 8am
+# Create a new schedule to invoke the lambda
 
 resource "aws_cloudwatch_event_rule" "audit_schedule" {
   name                = "audit_schedule"
   description         = "Periodically invokes audit"
-  schedule_expression = "cron(0,20,40 * * * ? *)"
+  schedule_expression = "${var.audit_schedule}"
   is_enabled          = false
   depends_on          = ["aws_lambda_function.audit"]
 }

@@ -9,6 +9,7 @@ and sticks it into a bucket
 | Name | Description | Default | Required |
 |------|-------------|:-----:|:-----:|
 | lambda_role | Name of the IAM role to use | - | yes |
+| audit_schedule | Cron expression which shows when to invoke the audit lambda | cron(0,20,40 * * * ? *) | no |
 
 ## Outputs
 

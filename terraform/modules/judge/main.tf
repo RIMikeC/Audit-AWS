@@ -45,16 +45,16 @@ resource "aws_iam_policy" "aws_game_lambda_policy" {
   policy = "${data.aws_iam_policy_document.aws_game_policy_document.json}"
 }
 
-data "archive_file" "lambda_audit_zip" {
+data "archive_file" "lambda_judge_zip" {
   type        = "zip"
   source_dir  = "${path.module}/source"
-  output_path = "${path.module}/audit.zip"
+  output_path = "${path.module}/judge.zip"
 }
 
 resource "aws_lambda_function" "judge" {
   function_name    = "judge"
-  filename         = "${path.module}/audit.zip"
-  source_code_hash = "${data.archive_file.lambda_audit_zip.output_base64sha256}"
+  filename         = "${path.module}/judge.zip"
+  source_code_hash = "${data.archive_file.lambda_judge_zip.output_base64sha256}"
   description      = "Judge for the AWS Game"
   handler          = "judge.lambda_handler"
   memory_size      = "128"
