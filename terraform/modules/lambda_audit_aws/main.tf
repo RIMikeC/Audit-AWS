@@ -43,6 +43,7 @@ data "aws_iam_policy_document" "audit_lambda_policy_document" {
       "lambda:ListFunctions",
       "ecs:ListClusters",
       "kinesis:ListStreams",
+      "rds:DescribeDBClusters",
     ]
 
     resources = ["*"]
