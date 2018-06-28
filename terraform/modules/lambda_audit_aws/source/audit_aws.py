@@ -17,51 +17,45 @@ bucket_name='ri-aws-audit'
 todays_date=str(datetime.date.today())
 audit_tags='&project=audit&programme=audit&product=audit&environment=production&cost_centre=81150&security_class=public&repo=RIMikeC/Audit-AWS&terraform=true'
 
-try:
-    ec2=boto3.client('ec2',region_name = 'eu-west-1')
+# Get the low-level clients
+
+try: ec2=boto3.client('ec2',region_name = 'eu-west-1')
 except Exception as e:
     print(e,": failed to connect to EC2 client")
     sys.exit(1)
 
-try:
-    asg=boto3.client('autoscaling',region_name = 'eu-west-1')
+try: asg=boto3.client('autoscaling',region_name = 'eu-west-1')
 except Exception as e:
     print(e,": failed to connect to ASG client")
     sys.exit(1)
 
-try:
-    ecs=boto3.client('ecs',region_name = 'eu-west-1')
+try: ecs=boto3.client('ecs',region_name = 'eu-west-1')
 except Exception as e:
     print(e,": failed to connect to ECS client")
     sys.exit(1)
 
-try:
-    s3=boto3.client('s3',region_name = 'eu-west-1')
+try: s3=boto3.client('s3',region_name = 'eu-west-1')
 except Exception as e:
     print(e,": failed to connect to s3 client")
     sys.exit(1)
 
-try:
-    sts=boto3.client('sts',region_name = 'eu-west-1')
+try: sts=boto3.client('sts',region_name = 'eu-west-1')
     account_id=sts.get_caller_identity()['Account']
 except Exception as e:
     print(e,": failed to connect to STS client")
     sys.exit(1)
 
-try:
-    lambs=boto3.client('lambda')
+try: lambs=boto3.client('lambda')
 except Exception as e:
     print(e,": failed to connect to lambda client")
     sys.exit(1)
 
-try:
-    kinesis=boto3.client('kinesis')
+try: kinesis=boto3.client('kinesis')
 except Exception as e:
     print(e,": failed to connect to kinesis client")
     sys.exit(1)
 
-try:
-    rds=boto3.client('rds')
+try: rds=boto3.client('rds')
 except Exception as e:
     print(e,": failed to connect to rds client")
     sys.exit(1)
