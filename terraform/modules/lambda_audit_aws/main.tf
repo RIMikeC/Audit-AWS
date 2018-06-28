@@ -1,4 +1,3 @@
-
 resource "aws_iam_role" "audit_lambda" {
   name = "audit_lambda_role"
 
@@ -42,6 +41,7 @@ data "aws_iam_policy_document" "audit_lambda_policy_document" {
       "ec2:DescribeTags",
       "ec2:DescribeVpcPeeringConnections",
       "lambda:ListFunctions",
+      "ecs:ListClusters",
     ]
 
     resources = ["*"]
