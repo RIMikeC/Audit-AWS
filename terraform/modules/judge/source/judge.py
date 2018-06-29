@@ -17,26 +17,22 @@ import time
 
 bucket_name='ri-aws-audit'
 
-try:
-    ec2=boto3.client('ec2',region_name = 'eu-west-1')
+try: ec2=boto3.client('ec2',region_name = 'eu-west-1')
 except Exception as e:
     print(e,": failed to connect to EC2 client")
     sys.exit(1)
 
-try:
-    asg=boto3.client('autoscaling',region_name = 'eu-west-1')
+try: asg=boto3.client('autoscaling',region_name = 'eu-west-1')
 except Exception as e:
     print(e,": failed to connect to ASG client")
     sys.exit(1)
 
-try:
-    ecs=boto3.client('ecs',region_name = 'eu-west-1')
+try: ecs=boto3.client('ecs',region_name = 'eu-west-1')
 except Exception as e:
     print(e,": failed to connect to ECS client")
     sys.exit(1)
 
-try:
-    s3=boto3.client('s3',region_name = 'eu-west-1')
+try: s3=boto3.client('s3',region_name = 'eu-west-1')
 except Exception as e:
     print(e,": failed to connect to s3 client")
     sys.exit(1)
@@ -48,6 +44,11 @@ except Exception as e:
     print(e,": failed to connect to sts client")
     sys.exit(1)
 
+try: cw=boto3.client('cloudwatch',region_name = 'eu-west-1')
+except Exception as e:
+    print("ERROR: failed to connect to CloudWatch")
+    sys.exit(1)
+
 def mark_ec2(data):
     print("fake marking ec2")
     return(2)
@@ -57,6 +58,7 @@ def mark_asg(data):
     for asg_map in data['AutoScalingGroups']:
         if asg_map['DesiredCapacity']==asg_map['MinSize']==asg_map['MaxSize']: not_scaling=not_scaling+1
     print(int(100*not_scaling/len(data['AutoScalingGroups'])))
+    put_cw_metric('Scalability',int(100*not_scaling/len(data['AutoScalingGroups'])),'Percent')
     return
 
 def mark_lambdas(data):
@@ -67,6 +69,20 @@ def mark_serverlessness(ins,lams):
     time.sleep(1)
     print("serverlessness ",ins,lams)
     return()
+
+def put_cw_metric(metric_name,metric_value,metric_units):
+    try:
+        cw.put_metric_data(
+            Namespace='Audit',
+            MetricData=[{
+                'MetricName': metric_name,
+                'Dimensions': [{'Name': 'USER', 'Value': account_id}],
+                'Value': metric_value
+                'Unit': metric_units
+            }]
+        )
+    except ClientError as e: print(e.response['Error']['Message'])
+    return
 
 def lambda_handler(event, context):  
     bucket = event['Records'][0]['s3']['bucket']['name']
