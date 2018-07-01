@@ -15,4 +15,11 @@ This is measured as
 #### --------------------------------------------------------------
 #### (#instances in ASGs where min, des and max are not identical)
 
+### serverlessness
+
+This is measured as 
+
+#### (Number of serverless workloads) x100
+#### -------------------------------------
+####      (Total number of workloads)
 

@@ -2,7 +2,7 @@
 #
 # By Mike C
 #
-# 25th June 2018
+# 5th July 2018
 #
 # Collect AWS resources for Ireland
 
@@ -11,26 +11,9 @@
 import boto3
 import sys
 import json
-import urllib.parse
-import datetime
-import time
+import urllib
 
 bucket_name='ri-aws-audit'
-
-try: ec2=boto3.client('ec2',region_name = 'eu-west-1')
-except Exception as e:
-    print(e,": failed to connect to EC2 client")
-    sys.exit(1)
-
-try: asg=boto3.client('autoscaling',region_name = 'eu-west-1')
-except Exception as e:
-    print(e,": failed to connect to ASG client")
-    sys.exit(1)
-
-try: ecs=boto3.client('ecs',region_name = 'eu-west-1')
-except Exception as e:
-    print(e,": failed to connect to ECS client")
-    sys.exit(1)
 
 try: s3=boto3.client('s3',region_name = 'eu-west-1')
 except Exception as e:
@@ -49,26 +32,20 @@ except Exception as e:
     print("ERROR: failed to connect to CloudWatch")
     sys.exit(1)
 
-def mark_ec2(data):
+def mark_ec2s(data):
     print("fake marking ec2")
     return(2)
 
-def mark_asg(data):
+def mark_scalability(data):
     not_scaling=0
     for asg_map in data['AutoScalingGroups']:
         if asg_map['DesiredCapacity']==asg_map['MinSize']==asg_map['MaxSize']: not_scaling=not_scaling+1
-    print(int(100*not_scaling/len(data['AutoScalingGroups'])))
     put_cw_metric('Scalability',int(100*not_scaling/len(data['AutoScalingGroups'])),'Percent')
     return
 
-def mark_lambdas(data):
-    lamba_count=len(data['Functions'])
-
-
-def mark_serverlessness(ins,lams):
-    time.sleep(1)
-    print("serverlessness ",ins,lams)
-    return()
+def mark_serverlessness(data):
+    put_cw_metric('Severlessness',int((data['Statistics'][0]['ResourceCounts'][0]['lambda']*100)/(data['Statistics'][0]['ResourceCounts'][0]['EC2']+data['Statistics'][0]['ResourceCounts'][0]['lambda'])),'Percent')
+    return
 
 def put_cw_metric(metric_name,metric_value,metric_units):
     try:
@@ -77,7 +54,7 @@ def put_cw_metric(metric_name,metric_value,metric_units):
             MetricData=[{
                 'MetricName': metric_name,
                 'Dimensions': [{'Name': 'USER', 'Value': account_id}],
-                'Value': metric_value
+                'Value': metric_value,
                 'Unit': metric_units
             }]
         )
@@ -100,8 +77,8 @@ def lambda_handler(event, context):
 
     lambda_count=0
     
-    if   'all_ec2.json'     in key: mark_ec2(data)
-    elif 'all_asg.json'     in key: mark_asg(data)
-    elif 'all_lambdas.json' in key: mark_lambdas(data)
+    if   'all_ec2s.json' in key: mark_ec2s(data)
+    elif 'all_asgs.json' in key: mark_scalability(data)
+    elif 'stats.json'    in key: mark_serverlessness(data)
 
 

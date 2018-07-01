@@ -15,7 +15,7 @@ import datetime
 
 bucket_name='ri-aws-audit'
 todays_date=str(datetime.date.today())
-audit_tags='&project=audit&programme=audit&product=audit&environment=production&cost_centre=81150&security_class=public&repo=RIMikeC/Audit-AWS&terraform=true'
+audit_tags='&project=audit&programme=audit&product=audit&environment=production&cost_centre=81150&security_class=public&repo=shared-lambdas&terraform=true'
 
 # Get the low-level clients
 
@@ -39,8 +39,7 @@ except Exception as e:
     print(e,": failed to connect to s3 client")
     sys.exit(1)
 
-try:
-    sts=boto3.client('sts',region_name = 'eu-west-1')
+try: sts=boto3.client('sts',region_name = 'eu-west-1')
     account_id=sts.get_caller_identity()['Account']
 except Exception as e:
     print(e,": failed to connect to STS client")
