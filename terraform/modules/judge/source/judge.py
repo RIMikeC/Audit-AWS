@@ -13,7 +13,7 @@ import sys
 import json
 import urllib
 
-bucket_name='ri-aws-audit'
+# Open the SDK clients
 
 try: s3=boto3.client('s3',region_name = 'eu-west-1')
 except Exception as e:
@@ -32,9 +32,13 @@ except Exception as e:
     print("ERROR: failed to connect to CloudWatch")
     sys.exit(1)
 
+# Award marks to the EC2 instances
+
 def mark_ec2s(data):
     print("fake marking ec2")
     return(2)
+
+# Award marks for scalability ie use of ASGs
 
 def mark_scalability(data):
     not_scaling=0
@@ -43,9 +47,13 @@ def mark_scalability(data):
     put_cw_metric('Scalability',int(100*not_scaling/len(data['AutoScalingGroups'])),'Percent')
     return
 
+# Award marks for the percentage of workloads that are serverless
+
 def mark_serverlessness(data):
     put_cw_metric('Severlessness',int((data['Statistics'][0]['ResourceCounts'][0]['lambda']*100)/(data['Statistics'][0]['ResourceCounts'][0]['EC2']+data['Statistics'][0]['ResourceCounts'][0]['lambda'])),'Percent')
     return
+
+# The following stanza sends the value passed as a parameter to CW as a custom metric in the 'Audit' namespace
 
 def put_cw_metric(metric_name,metric_value,metric_units):
     try:
@@ -61,10 +69,11 @@ def put_cw_metric(metric_name,metric_value,metric_units):
     except ClientError as e: print(e.response['Error']['Message'])
     return
 
+# lambda_handler is the default name of the entry point for lambda
+
 def lambda_handler(event, context):  
     bucket = event['Records'][0]['s3']['bucket']['name']
     key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
-    print("bucket is: ",bucket,"   key is: ",key)
     try:
         response = s3.get_object(Bucket=bucket, Key=key)
     except Exception as e:
