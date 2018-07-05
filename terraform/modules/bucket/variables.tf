@@ -7,7 +7,7 @@ variable "contestants" {
 variable "s3_bucket_name" {
   type        = "string"
   description = "storage for the AWS audit"
-  default     = "ri-aws-audit"
+  default     = "std-ri-aws-audit"
 }
 
 variable "bucket_tags" {

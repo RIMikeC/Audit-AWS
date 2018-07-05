@@ -4,9 +4,9 @@ provider "aws" {
 
 // This should go into another account, maybe transit prod?
 
-module "buildabucket" {
-  source = "../../../modules/bucket"
-}
+#module "buildabucket" {
+#  source = "../../../modules/bucket"
+#}
 
 // This bit should go into shared_lambdas
 

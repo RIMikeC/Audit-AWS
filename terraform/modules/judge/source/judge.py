@@ -90,4 +90,9 @@ def lambda_handler(event, context):
     elif 'all_asgs.json' in key: mark_scalability(data)
     elif 'stats.json'    in key: mark_serverlessness(data)
 
+# subnets
+#for i in data['Subnets']:
+#     if '10.20' in i['CidrBlock']:
+#         i['AvailabilityZone'],i['AvailableIpAddressCount'],i['CidrBlock'],i['SubnetId']
+
 

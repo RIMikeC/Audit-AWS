@@ -1,6 +1,6 @@
 
-variable "bucket_name" {
+variable "bucket_arn" {
   type        = "string"
-  description = "name of the bucket in which the audit info is collected"
-  default     = "ri-aws-audit"
+  description = "Bucket in which the audit info is collected"
+  default     = "arn:aws:s3:::ri-aws-audit"
 }

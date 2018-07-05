@@ -69,20 +69,16 @@ resource "aws_lambda_function" "judge" {
   }
 }
 
-data "aws_s3_bucket" "selected" {
-  bucket = "${var.bucket_name}"
-}
-
 resource "aws_lambda_permission" "allow_bucket" {
   statement_id  = "AllowExecutionFromS3Bucket"
   action        = "lambda:InvokeFunction"
   function_name = "${aws_lambda_function.judge.arn}"
   principal     = "s3.amazonaws.com"
-  source_arn    = "${data.aws_s3_bucket.selected.arn}"
+  source_arn    = "${var.bucket_arn}"
 }
 
 resource "aws_s3_bucket_notification" "bucket_notification" {
-  bucket = "${data.aws_s3_bucket.selected.id}"
+  bucket = "${var.bucket_arn}"
 
   lambda_function {
     lambda_function_arn = "${aws_lambda_function.judge.arn}"
