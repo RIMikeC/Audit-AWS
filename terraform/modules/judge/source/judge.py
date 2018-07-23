@@ -53,6 +53,17 @@ def mark_serverlessness(data):
     put_cw_metric('Severlessness',int((data['Statistics'][0]['ResourceCounts'][0]['lambda']*100)/(data['Statistics'][0]['ResourceCounts'][0]['EC2']+data['Statistics'][0]['ResourceCounts'][0]['lambda'])),'Percent')
     return
 
+# Find the percentage of tags that should be used that actually have been used
+
+def mark_tags(data):
+    counts=data['Statistics'][0]['ResourceCounts'][0]
+    print("taggable itema ",counts['Subnets']+counts['NATGateways']+['VPC']+['Volumes']+['SecurityGroups']+['RouteTables']+['EC2']+['InternetGW'])
+    print("Tags used ",counts['Tag'],counts['NATGateways'],counts['VPC'],counts['Volumes'],counts['SecurityGroups'])
+    print("more ",counts['RouteTables'],counts['EC2'],counts['InternetGW'])
+    print("total correct tags used ",counts['Tag'])
+    
+
+
 # The following stanza sends the value passed as a parameter to CW as a custom metric in the 'Audit' namespace
 
 def put_cw_metric(metric_name,metric_value,metric_units):
@@ -88,7 +99,9 @@ def lambda_handler(event, context):
     
     if   'all_ec2s.json' in key: mark_ec2s(data)
     elif 'all_asgs.json' in key: mark_scalability(data)
-    elif 'stats.json'    in key: mark_serverlessness(data)
+    elif 'stats.json'    in key: 
+        mark_serverlessness(data)
+        mark_tags(data)
 
 # subnets
 #for i in data['Subnets']:

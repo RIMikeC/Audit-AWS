@@ -16,6 +16,8 @@ module "invokeaudit" {
 
 // This bit should go into another account, maybe transit prod?
 
-module "goJudy" {
-  source = "../../../modules/judge"
-}
+
+#module "goJudy" {
+#  source = "../../../modules/judge"
+#}
+
